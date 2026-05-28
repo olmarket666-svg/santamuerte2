@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Santa Muerte MC</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue-deep:#020b18;--blue-dark:#040f22;--blue-mid:#061a38;--blue-light:#0a2a5e;
+  --blue-accent:#1a4a9e;--blue-glow:#2060d0;--blue-bright:#4090ff;--blue-neon:#60b0ff;
+  --skull-gold:#c8960a;--skull-gold-light:#f0b820;--blood-red:#8b0000;--blood-bright:#cc1111;
+  --rust:#7a3010;--ash:#3a4a5a;--smoke:#1a2535;
+  --text-primary:#c8ddf0;--text-dim:#5a7a9a;--text-bright:#e8f4ff;
+  --online:#00cc66;--offline:#cc3333;--border:#0d3060;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--blue-deep);color:var(--text-primary);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 60% 40% at 50% -10%,rgba(32,96,208,.18) 0%,transparent 70%),radial-gradient(ellipse 40% 60% at 0% 50%,rgba(10,42,94,.3) 0%,transparent 60%);pointer-events:none;z-index:0;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);pointer-events:none;z-index:1;}
+#skull-bg{position:fixed;bottom:-5%;right:-5%;width:55vw;max-width:650px;opacity:.025;pointer-events:none;z-index:0;filter:blur(1px);}
+#particles{position:fixed;inset:0;z-index:0;pointer-events:none;}
+::-webkit-scrollbar{width:4px;background:var(--blue-deep);}
+::-webkit-scrollbar-thumb{background:var(--blue-accent);}
+
+/* ── LOGIN GATE ── */
+#login-gate{position:fixed;inset:0;background:rgba(2,11,24,.97);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(8px);}
+.gate-box{border:1px solid var(--blue-glow);box-shadow:0 0 60px rgba(32,96,208,.3),inset 0 0 40px rgba(2,11,24,.8);padding:46px 56px;background:var(--blue-dark);text-align:center;position:relative;min-width:370px;animation:gateIn .5s ease;}
+@keyframes gateIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+.gate-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue-glow),var(--skull-gold),var(--blue-glow),transparent);}
+.gate-skull{font-size:3rem;margin-bottom:16px;filter:drop-shadow(0 0 12px rgba(200,150,10,.5));}
+.gate-title{font-family:'Cinzel Decorative',serif;font-size:1.3rem;color:var(--skull-gold);letter-spacing:2px;margin-bottom:6px;}
+.gate-sub{color:var(--text-dim);font-size:.8rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:26px;}
+.gate-tabs{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--border);}
+.gate-tab{flex:1;background:none;border:none;color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;padding:10px;cursor:pointer;transition:all .3s;}
+.gate-tab.active{background:var(--blue-light);color:var(--text-bright);}
+.gate-panel{display:none;}.gate-panel.active{display:block;}
+.gate-input{width:100%;background:rgba(6,26,56,.8);border:1px solid var(--blue-accent);color:var(--text-bright);font-family:'Share Tech Mono',monospace;padding:11px 14px;font-size:.95rem;letter-spacing:3px;text-align:center;outline:none;margin-bottom:12px;transition:border-color .3s,box-shadow .3s;}
+.gate-input:focus{border-color:var(--blue-neon);box-shadow:0 0 20px rgba(96,176,255,.3);}
+.gate-btn{width:100%;background:linear-gradient(135deg,var(--blue-accent),var(--blue-glow));border:none;color:var(--text-bright);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:12px;cursor:pointer;transition:all .3s;margin-bottom:10px;}
+.gate-btn:hover{box-shadow:0 0 30px rgba(32,96,208,.6);transform:translateY(-1px);}
+.gate-btn.gold{background:linear-gradient(135deg,var(--skull-gold),var(--rust));}
+.gate-visitor{background:none;border:1px solid var(--ash);color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-size:.82rem;letter-spacing:2px;text-transform:uppercase;padding:9px;cursor:pointer;width:100%;transition:all .3s;}
+.gate-visitor:hover{border-color:var(--text-dim);color:var(--text-primary);}
+.gate-error{color:var(--blood-bright);font-size:.78rem;letter-spacing:2px;margin-bottom:10px;display:none;}
+.gate-info{color:var(--text-dim);font-size:.78rem;margin-bottom:12px;line-height:1.5;}
+
+/* ── MEMBER VIEW OVERLAY ── */
+#member-view{position:fixed;inset:0;background:var(--blue-deep);z-index:5000;display:none;flex-direction:column;overflow-y:auto;}
+#member-view.open{display:flex;}
+.mv-header{background:linear-gradient(180deg,rgba(4,15,34,.98),rgba(2,11,24,.8));border-bottom:1px solid var(--border);padding:0 36px;height:72px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.mv-header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue-glow),var(--skull-gold-light),var(--blue-glow),transparent);opacity:.6;}
+.mv-logo{display:flex;align-items:center;gap:14px;}
+.mv-emblem{width:44px;height:44px;border:2px solid var(--skull-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;box-shadow:0 0 18px rgba(200,150,10,.4);animation:pulse-gold 3s ease-in-out infinite;}
+.mv-title{font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--skull-gold);letter-spacing:1px;}
+.mv-title span{display:block;font-family:'Rajdhani',sans-serif;font-size:.65rem;letter-spacing:4px;color:var(--text-dim);text-transform:uppercase;}
+.mv-body{flex:1;max-width:900px;margin:0 auto;width:100%;padding:40px 24px;}
+.mv-welcome{text-align:center;margin-bottom:40px;}
+.mv-avatar-big{font-size:5rem;margin-bottom:12px;filter:drop-shadow(0 0 20px rgba(32,96,208,.5));}
+.mv-member-name{font-family:'Cinzel Decorative',serif;font-size:1.6rem;color:var(--skull-gold-light);margin-bottom:4px;}
+.mv-member-role{font-size:.75rem;letter-spacing:4px;text-transform:uppercase;}
+.mv-section-title{font-family:'Cinzel Decorative',serif;font-size:1rem;color:var(--skull-gold);letter-spacing:1px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.mv-status-card{background:linear-gradient(135deg,var(--blue-dark),var(--smoke));border:1px solid var(--border);padding:28px;text-align:center;margin-bottom:28px;}
+.mv-status-label{font-size:.75rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px;}
+.mv-status-display{font-size:2rem;margin-bottom:8px;}
+.mv-status-text{font-size:1.1rem;font-weight:700;margin-bottom:20px;}
+.mv-toggle-btn{background:linear-gradient(135deg,var(--blue-light),var(--blue-glow));border:1px solid var(--blue-accent);color:var(--text-bright);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:2px;text-transform:uppercase;padding:13px 32px;cursor:pointer;transition:all .3s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+.mv-toggle-btn:hover{box-shadow:0 0 30px rgba(32,96,208,.6);}
+.mv-toggle-btn.going-offline{background:linear-gradient(135deg,#5a0000,var(--blood-red));border-color:var(--blood-red);}
+.mv-quota-section{margin-bottom:28px;}
+.mv-quota-item{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+.mv-quota-name{width:80px;font-size:.8rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;}
+.mv-quota-bar-wrap{flex:1;height:8px;background:var(--blue-mid);border:1px solid var(--border);overflow:hidden;}
+.mv-quota-bar{height:100%;background:linear-gradient(90deg,var(--blue-glow),var(--blue-neon));transition:width .5s;}
+.mv-quota-bar.full{background:linear-gradient(90deg,#006633,var(--online));}
+.mv-quota-val{font-family:'Share Tech Mono',monospace;font-size:.85rem;color:var(--skull-gold-light);min-width:90px;text-align:right;}
+.mv-quota-input-wrap{display:flex;gap:8px;margin-top:4px;}
+.mv-quota-input{flex:1;background:var(--blue-dark);border:1px solid var(--border);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:.85rem;padding:8px 10px;outline:none;}
+.mv-quota-input:focus{border-color:var(--blue-glow);}
+.mv-resources-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:28px;}
+.mv-res-card{background:linear-gradient(135deg,var(--blue-dark),var(--smoke));border:1px solid var(--border);padding:18px;text-align:center;}
+.mv-res-icon{font-size:2rem;margin-bottom:8px;}
+.mv-res-name{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:4px;}
+.mv-res-qty{font-family:'Share Tech Mono',monospace;font-size:1.4rem;color:var(--skull-gold-light);}
+
+/* ── HEADER ── */
+header{position:relative;z-index:10;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(4,15,34,.95),rgba(2,11,24,.7));backdrop-filter:blur(12px);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:80px;}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue-glow),var(--skull-gold-light),var(--blue-glow),transparent);opacity:.6;}
+.header-logo{display:flex;align-items:center;gap:18px;}
+.logo-emblem{width:52px;height:52px;border:2px solid var(--skull-gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;box-shadow:0 0 20px rgba(200,150,10,.4),inset 0 0 15px rgba(200,150,10,.1);animation:pulse-gold 3s ease-in-out infinite;}
+@keyframes pulse-gold{0%,100%{box-shadow:0 0 20px rgba(200,150,10,.4),inset 0 0 15px rgba(200,150,10,.1);}50%{box-shadow:0 0 35px rgba(200,150,10,.7),inset 0 0 25px rgba(200,150,10,.2);}}
+.logo-text h1{font-family:'Cinzel Decorative',serif;font-size:1.2rem;color:var(--skull-gold);letter-spacing:2px;line-height:1.2;}
+.logo-text span{font-size:.65rem;letter-spacing:5px;text-transform:uppercase;color:var(--text-dim);}
+.header-right{display:flex;align-items:center;gap:14px;}
+.hdr-badge{display:none;font-weight:700;padding:4px 12px;font-size:.7rem;letter-spacing:3px;border-radius:2px;}
+.hdr-badge.admin{background:linear-gradient(135deg,var(--skull-gold),var(--rust));color:var(--blue-deep);}
+.hdr-badge.member{background:linear-gradient(135deg,var(--blue-accent),var(--blue-glow));color:var(--text-bright);}
+.logout-btn{background:none;border:1px solid var(--blood-red);color:var(--blood-bright);font-family:'Rajdhani',sans-serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;cursor:pointer;transition:all .3s;display:none;}
+.logout-btn:hover{background:var(--blood-red);color:white;}
+
+/* ── NAV ── */
+nav{position:relative;z-index:10;background:rgba(4,15,34,.8);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 40px;overflow-x:auto;}
+nav::-webkit-scrollbar{height:2px;background:var(--blue-deep);}
+nav::-webkit-scrollbar-thumb{background:var(--blue-accent);}
+.nav-btn{background:none;border:none;color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:18px 22px;cursor:pointer;position:relative;transition:color .3s;white-space:nowrap;}
+.nav-btn::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:linear-gradient(90deg,var(--blue-glow),var(--skull-gold));transition:left .3s,right .3s;}
+.nav-btn:hover{color:var(--text-primary);}
+.nav-btn.active{color:var(--blue-neon);}
+.nav-btn.active::after{left:0;right:0;}
+
+/* ── MAIN ── */
+main{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:40px;}
+.section{display:none;animation:fadeIn .4s ease;}
+.section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid var(--border);position:relative;flex-wrap:wrap;gap:12px;}
+.section-header::after{content:'';position:absolute;bottom:-1px;left:0;width:120px;height:2px;background:linear-gradient(90deg,var(--blue-glow),transparent);}
+.section-title{font-family:'Cinzel Decorative',serif;font-size:1.5rem;color:var(--skull-gold);letter-spacing:1px;}
+.section-title span{color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-size:.78rem;font-weight:400;letter-spacing:3px;display:block;text-transform:uppercase;margin-top:4px;}
+.section-actions{display:flex;gap:10px;flex-wrap:wrap;}
+
+/* ── BUTTONS ── */
+.btn-primary{background:linear-gradient(135deg,var(--blue-light),var(--blue-glow));border:1px solid var(--blue-accent);color:var(--text-bright);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:2px;text-transform:uppercase;padding:9px 20px;cursor:pointer;transition:all .3s;clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%);}
+.btn-primary:hover{box-shadow:0 0 25px rgba(32,96,208,.5);transform:translateY(-1px);}
+.btn-gold{background:linear-gradient(135deg,var(--skull-gold),var(--rust));border:1px solid var(--skull-gold);color:var(--blue-deep);font-family:'Rajdhani',sans-serif;font-weight:700;font-size:.82rem;letter-spacing:2px;text-transform:uppercase;padding:9px 20px;cursor:pointer;transition:all .3s;clip-path:polygon(7px 0%,100% 0%,calc(100% - 7px) 100%,0% 100%);}
+.btn-danger{background:linear-gradient(135deg,var(--blood-red),#3a0000);border:1px solid var(--blood-red);color:#ffaaaa;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;cursor:pointer;transition:all .3s;}
+.btn-danger:hover{box-shadow:0 0 18px rgba(139,0,0,.5);}
+.btn-edit{background:linear-gradient(135deg,#0a3a5e,#1a5a8e);border:1px solid #2080c0;color:#90d0ff;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;cursor:pointer;transition:all .3s;}
+.btn-edit:hover{box-shadow:0 0 18px rgba(32,128,192,.4);}
+.btn-success{background:linear-gradient(135deg,#005530,#003320);border:1px solid #00aa66;color:#66ffaa;font-family:'Rajdhani',sans-serif;font-weight:600;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;cursor:pointer;transition:all .3s;}
+.admin-only{display:none;}
+
+/* ── STATS BAR ── */
+.stats-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:32px;}
+.stat-box{background:linear-gradient(135deg,var(--blue-dark),var(--smoke));border:1px solid var(--border);padding:16px 20px;position:relative;overflow:hidden;}
+.stat-box::after{content:attr(data-icon);position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:2rem;opacity:.15;}
+.stat-val{font-family:'Share Tech Mono',monospace;font-size:1.7rem;color:var(--skull-gold-light);}
+.stat-label{font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-top:3px;}
+
+/* ── RESOURCE CARD ── */
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px;}
+.resource-card{background:linear-gradient(135deg,var(--blue-dark),var(--smoke));border:1px solid var(--border);padding:22px;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s;clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));}
+.resource-card:hover{border-color:var(--blue-glow);box-shadow:0 0 28px rgba(32,96,208,.2);}
+.resource-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue-glow),transparent);}
+.resource-img{width:100%;height:120px;object-fit:cover;margin-bottom:14px;filter:saturate(.6) brightness(.8);border:1px solid var(--border);}
+.resource-img-placeholder{width:100%;height:120px;background:var(--blue-mid);display:flex;align-items:center;justify-content:center;font-size:3rem;margin-bottom:14px;border:1px solid var(--border);color:var(--text-dim);}
+.resource-name{font-family:'Cinzel Decorative',serif;font-size:.88rem;color:var(--blue-neon);margin-bottom:6px;letter-spacing:1px;}
+.resource-qty{font-family:'Share Tech Mono',monospace;font-size:1.7rem;color:var(--skull-gold-light);font-weight:700;line-height:1;}
+.resource-qty-label{font-size:.7rem;color:var(--text-dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.qty-controls{display:flex;gap:6px;margin-top:12px;}
+.qty-btn{background:var(--blue-mid);border:1px solid var(--border);color:var(--text-primary);font-family:'Share Tech Mono',monospace;font-size:.9rem;padding:6px 10px;cursor:pointer;transition:all .2s;flex-shrink:0;}
+.qty-btn:hover{background:var(--blue-light);border-color:var(--blue-glow);}
+.qty-input-sm{flex:1;min-width:0;background:var(--blue-dark);border:1px solid var(--border);color:var(--text-bright);font-family:'Share Tech Mono',monospace;text-align:center;font-size:.85rem;padding:6px;outline:none;}
+.qty-input-sm:focus{border-color:var(--blue-glow);}
+.res-card-actions{display:flex;gap:6px;margin-top:10px;}
+
+/* ── MEMBER CARD ── */
+.member-card{background:linear-gradient(135deg,var(--blue-dark),rgba(6,26,56,.5));border:1px solid var(--border);padding:20px 24px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden;transition:all .3s;}
+.member-card.online{border-color:rgba(0,204,102,.4);}
+.member-card.online::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--online);box-shadow:0 0 12px var(--online);}
+.member-card.offline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--offline);}
+.member-avatar{width:52px;height:52px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--blue-mid);flex-shrink:0;position:relative;}
+.member-avatar::after{content:'';position:absolute;bottom:1px;right:1px;width:12px;height:12px;border-radius:50%;border:2px solid var(--blue-dark);}
+.member-card.online .member-avatar::after{background:var(--online);box-shadow:0 0 6px var(--online);}
+.member-card.offline .member-avatar::after{background:var(--offline);}
+.member-info{flex:1;min-width:0;}
+.member-name{font-weight:700;font-size:1rem;color:var(--text-bright);}
+.member-fullname{font-size:.8rem;color:var(--text-dim);margin-top:1px;}
+.member-role{font-size:.68rem;letter-spacing:3px;text-transform:uppercase;margin-top:2px;}
+.member-card-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.member-status-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-size:.75rem;letter-spacing:2px;text-transform:uppercase;padding:6px 12px;cursor:pointer;transition:all .3s;white-space:nowrap;}
+.member-card.online .member-status-btn{border-color:rgba(0,204,102,.5);color:var(--online);}
+.member-card.offline .member-status-btn{border-color:rgba(204,51,51,.5);color:var(--offline);}
+.member-pass-tag{font-family:'Share Tech Mono',monospace;font-size:.65rem;color:var(--text-dim);background:var(--blue-mid);border:1px solid var(--border);padding:2px 8px;letter-spacing:1px;}
+
+/* Role colors */
+.role-prospect{color:var(--text-dim);}
+.role-membre{color:#6090d0;}
+.role-capitaine{color:#80b0ff;}
+.role-sergent{color:#d04040;}
+.role-tresorier{color:var(--skull-gold);}
+.role-secretaire{color:#a070e0;}
+.role-vice-president{color:#f0a020;}
+.role-president{color:var(--skull-gold-light);text-shadow:0 0 10px rgba(240,184,32,.5);}
+
+/* ── QUOTA CARD ── */
+.quota-card{background:linear-gradient(135deg,var(--blue-dark),var(--smoke));border:1px solid var(--border);padding:22px;position:relative;}
+.quota-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--skull-gold),transparent);opacity:.4;}
+.quota-member-name{font-weight:700;font-size:1.05rem;color:var(--text-bright);margin-bottom:3px;}
+.quota-member-role{font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px;}
+.quota-item{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.quota-item-name{width:85px;font-size:.78rem;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;flex-shrink:0;}
+.quota-bar-wrap{flex:1;height:7px;background:var(--blue-mid);border:1px solid var(--border);overflow:hidden;}
+.quota-bar{height:100%;background:linear-gradient(90deg,var(--blue-glow),var(--blue-neon));transition:width .5s;position:relative;}
+.quota-bar::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.3) 50%,transparent 100%);animation:shimmer 2s infinite;}
+@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.quota-bar.full{background:linear-gradient(90deg,#006633,var(--online));}
+.quota-val{font-family:'Share Tech Mono',monospace;font-size:.82rem;color:var(--skull-gold-light);min-width:86px;text-align:right;}
+.quota-edit-section{margin-top:14px;border-top:1px solid var(--border);padding-top:14px;}
+.quota-edit-label{font-size:.7rem;letter-spacing:3px;color:var(--text-dim);text-transform:uppercase;margin-bottom:10px;}
+.quota-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;}
+.quota-row-label{font-size:.75rem;color:var(--text-dim);width:72px;flex-shrink:0;}
+.quota-input{flex:1;background:var(--blue-dark);border:1px solid var(--border);color:var(--text-bright);font-family:'Share Tech Mono',monospace;font-size:.85rem;padding:7px 9px;outline:none;}
+.quota-input:focus{border-color:var(--blue-glow);}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(2,11,24,.88);backdrop-filter:blur(8px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--blue-dark);border:1px solid var(--blue-glow);box-shadow:0 0 80px rgba(32,96,208,.3);padding:36px 40px;max-width:520px;width:100%;position:relative;animation:modalIn .3s ease;max-height:90vh;overflow-y:auto;}
+@keyframes modalIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.modal::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--blue-glow),var(--skull-gold),var(--blue-glow),transparent);}
+.modal-title{font-family:'Cinzel Decorative',serif;font-size:1.1rem;color:var(--skull-gold);margin-bottom:24px;}
+.form-field{margin-bottom:18px;}
+.form-label{display:block;font-size:.73rem;letter-spacing:3px;text-transform:uppercase;color:var(--text-dim);margin-bottom:7px;}
+.form-input,.form-select{width:100%;background:rgba(6,26,56,.8);border:1px solid var(--border);color:var(--text-bright);font-family:'Rajdhani',sans-serif;font-size:1rem;padding:10px 13px;outline:none;transition:border-color .3s;}
+.form-input:focus,.form-select:focus{border-color:var(--blue-glow);box-shadow:0 0 15px rgba(32,96,208,.2);}
+.form-select option{background:var(--blue-dark);}
+.modal-actions{display:flex;gap:10px;margin-top:24px;}
+.modal-close{background:none;border:1px solid var(--ash);color:var(--text-dim);font-family:'Rajdhani',sans-serif;font-size:.85rem;letter-spacing:2px;text-transform:uppercase;padding:9px 18px;cursor:pointer;transition:all .3s;}
+.modal-close:hover{border-color:var(--text-dim);color:var(--text-primary);}
+.form-divider{border:none;border-top:1px solid var(--border);margin:16px 0;}
+.form-note{font-size:.78rem;color:var(--text-dim);background:rgba(6,26,56,.5);border:1px solid var(--border);padding:10px 14px;margin-bottom:14px;line-height:1.5;}
+
+/* ── ROLES / REGLEMENT ── */
+.role-card{background:linear-gradient(135deg,var(--blue-dark),var(--smoke));border:1px solid var(--border);padding:26px;position:relative;overflow:hidden;transition:border-color .3s;}
+.role-card:hover{border-color:var(--blue-glow);}
+.role-icon{font-size:2rem;margin-bottom:10px;}
+.role-card-name{font-family:'Cinzel Decorative',serif;font-size:.95rem;margin-bottom:9px;letter-spacing:1px;}
+.role-card-desc{font-size:.92rem;color:var(--text-dim);line-height:1.7;}
+.rule-item{background:linear-gradient(135deg,var(--blue-dark),var(--smoke));border:1px solid var(--border);padding:20px 24px;display:flex;gap:18px;align-items:flex-start;transition:border-color .3s;}
+.rule-item:hover{border-color:rgba(200,150,10,.3);}
+.rule-number{font-family:'Share Tech Mono',monospace;font-size:1.3rem;color:var(--skull-gold);min-width:36px;line-height:1;margin-top:2px;}
+.rule-title{font-weight:700;font-size:1rem;color:var(--text-bright);margin-bottom:5px;}
+.rule-text{font-size:.92rem;color:var(--text-dim);line-height:1.7;}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:28px;right:28px;background:var(--blue-dark);border:1px solid var(--blue-glow);color:var(--text-bright);padding:13px 20px;font-size:.88rem;letter-spacing:1px;box-shadow:0 0 30px rgba(32,96,208,.4);z-index:9000;transform:translateX(120%);transition:transform .3s ease;max-width:280px;}
+#toast.show{transform:translateX(0);}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:70px 40px;color:var(--text-dim);}
+.empty-state-icon{font-size:3.5rem;margin-bottom:18px;opacity:.4;}
+.empty-state-text{font-size:.82rem;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:768px){header{padding:0 18px;height:66px;}nav{padding:0 14px;}main{padding:22px 14px;}.grid-3,.grid-2{grid-template-columns:1fr;}.stats-bar{grid-template-columns:1fr 1fr;}.gate-box{padding:28px 22px;min-width:unset;}.mv-body{padding:24px 14px;}}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<svg id="skull-bg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="100" cy="85" r="65" fill="#4090ff"/><ellipse cx="100" cy="150" rx="35" ry="20" fill="#4090ff"/>
+  <circle cx="75" cy="80" r="18" fill="#020b18"/><circle cx="125" cy="80" r="18" fill="#020b18"/>
+  <rect x="88" y="140" width="10" height="25" rx="3" fill="#020b18"/><rect x="103" y="140" width="10" height="25" rx="3" fill="#020b18"/>
+  <rect x="78" y="143" width="10" height="22" rx="3" fill="#020b18"/><rect x="113" y="143" width="10" height="22" rx="3" fill="#020b18"/>
+  <path d="M70 115 Q100 130 130 115" stroke="#020b18" stroke-width="4" fill="none"/>
+</svg>
+
+<!-- ══════════════════ LOGIN GATE ══════════════════ -->
+<div id="login-gate">
+  <div class="gate-box">
+    <div class="gate-skull">💀</div>
+    <div class="gate-title">La Santa Muerte</div>
+    <div class="gate-sub">Motor Cycle Club</div>
+    <div class="gate-tabs">
+      <button class="gate-tab active" onclick="switchGateTab('admin')">⚡ Admin</button>
+      <button class="gate-tab" onclick="switchGateTab('member')">👤 Membre</button>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div class="gate-panel active" id="gate-admin-panel">
+      <div class="gate-error" id="gate-admin-error">Mot de passe incorrect</div>
+      <input type="password" class="gate-input" id="gate-admin-pass" placeholder="MOT DE PASSE ADMIN" autocomplete="off">
+      <button class="gate-btn" onclick="tryAdmin()">⚡ CONNEXION ADMIN</button>
+      <button class="gate-visitor" onclick="enterVisitor()">Continuer en visiteur</button>
+    </div>
+
+    <!-- MEMBER TAB -->
+    <div class="gate-panel" id="gate-member-panel">
+      <div class="gate-info">Entrez votre pseudo GTA et votre mot de passe personnel.</div>
+      <div class="gate-error" id="gate-member-error">Pseudo ou mot de passe incorrect</div>
+      <input type="text" class="gate-input" id="gate-member-name" placeholder="PSEUDO GTA" autocomplete="off" style="letter-spacing:2px;">
+      <input type="password" class="gate-input" id="gate-member-pass" placeholder="MOT DE PASSE" autocomplete="off">
+      <button class="gate-btn gold" onclick="tryMember()">🔱 CONNEXION MEMBRE</button>
+      <button class="gate-visitor" onclick="enterVisitor()">Continuer en visiteur</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ MEMBER VIEW ══════════════════ -->
+<div id="member-view">
+  <div class="mv-header">
+    <div class="mv-logo">
+      <div class="mv-emblem">💀</div>
+      <div>
+        <div class="mv-title">La Santa Muerte <span>Motor Cycle Club</span></div>
+      </div>
+    </div>
+    <button class="logout-btn" style="display:flex;" onclick="logout()">Déconnexion</button>
+  </div>
+  <div class="mv-body">
+    <div class="mv-welcome">
+      <div class="mv-avatar-big" id="mv-avatar"></div>
+      <div class="mv-member-name" id="mv-name"></div>
+      <div class="mv-member-role" id="mv-role-display"></div>
+    </div>
+
+    <!-- Status toggle -->
+    <div class="mv-section-title">🟢 Mon Statut</div>
+    <div class="mv-status-card">
+      <div class="mv-status-label">Statut actuel</div>
+      <div class="mv-status-display" id="mv-status-icon">🔴</div>
+      <div class="mv-status-text" id="mv-status-text">Absent</div>
+      <button class="mv-toggle-btn" id="mv-toggle-btn" onclick="memberToggleStatus()">Se mettre En Ligne</button>
+    </div>
+
+    <!-- Quotas -->
+    <div class="mv-section-title">📊 Mes Contributions</div>
+    <div class="mv-quota-section" id="mv-quota-section"></div>
+
+    <!-- Ressources du club -->
+    <div class="mv-section-title">📦 Stocks du Club</div>
+    <div class="mv-resources-grid" id="mv-resources-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════ HEADER ══════════════════ -->
+<header>
+  <div class="header-logo">
+    <div class="logo-emblem">💀</div>
+    <div class="logo-text">
+      <h1>La Santa Muerte</h1>
+      <span>Motor Cycle Club — Est. 2024</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="hdr-badge admin" id="admin-badge">⚡ ADMIN</span>
+    <span class="hdr-badge member" id="visitor-badge" style="display:inline-block;">👁 VISITEUR</span>
+    <button class="logout-btn" id="logout-btn" onclick="logout()">Déconnexion</button>
+  </div>
+</header>
+
+<!-- ══════════════════ NAV ══════════════════ -->
+<nav>
+  <button class="nav-btn active" onclick="showSection('ressources',this)">📦 Ressources</button>
+  <button class="nav-btn" onclick="showSection('membres',this)">👥 Membres</button>
+  <button class="nav-btn" onclick="showSection('quotas',this)">📊 Quotas</button>
+  <button class="nav-btn" onclick="showSection('roles',this)">🎖️ Rôles</button>
+  <button class="nav-btn" onclick="showSection('reglement',this)">⚖️ Règlement</button>
+</nav>
+
+<!-- ══════════════════ MAIN ══════════════════ -->
+<main>
+
+  <!-- ═══ RESSOURCES ═══ -->
+  <section id="ressources" class="section active">
+    <div class="section-header">
+      <div class="section-title">📦 Inventaire Ressources<span>Gestion des stocks du MC</span></div>
+      <div class="section-actions admin-only">
+        <button class="btn-primary admin-only" onclick="openModal('modal-add-resource')" style="display:none">+ Ajouter</button>
+      </div>
+    </div>
+    <div class="stats-bar" id="resource-stats">
+      <div class="stat-box" data-icon="📦"><div class="stat-val" id="stat-total">3</div><div class="stat-label">Ressources</div></div>
+      <div class="stat-box" data-icon="🪵"><div class="stat-val" id="stat-bois">1000</div><div class="stat-label">Bois</div></div>
+      <div class="stat-box" data-icon="🪨"><div class="stat-val" id="stat-pierre">1000</div><div class="stat-label">Pierre</div></div>
+      <div class="stat-box" data-icon="⚙️"><div class="stat-val" id="stat-ferraille">1000</div><div class="stat-label">Ferraille</div></div>
+    </div>
+    <div class="grid-3" id="resources-grid"></div>
+  </section>
+
+  <!-- ═══ MEMBRES ═══ -->
+  <section id="membres" class="section">
+    <div class="section-header">
+      <div class="section-title">👥 Roster des Membres<span>Statut en temps réel</span></div>
+      <div class="section-actions admin-only">
+        <button class="btn-primary" onclick="openModal('modal-add-member')">+ Ajouter membre</button>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-box" data-icon="👥"><div class="stat-val" id="stat-membres">0</div><div class="stat-label">Total membres</div></div>
+      <div class="stat-box" data-icon="🟢"><div class="stat-val" id="stat-online">0</div><div class="stat-label">En ligne</div></div>
+      <div class="stat-box" data-icon="🔴"><div class="stat-val" id="stat-offline">0</div><div class="stat-label">Absents</div></div>
+    </div>
+    <div class="grid-2" id="members-grid"></div>
+  </section>
+
+  <!-- ═══ QUOTAS ═══ -->
+  <section id="quotas" class="section">
+    <div class="section-header">
+      <div class="section-title">📊 Système de Quotas<span>Contributions des membres</span></div>
+      <div class="section-actions admin-only">
+        <button class="btn-gold" onclick="openModal('modal-quota-target')">⚙️ Modifier objectifs</button>
+      </div>
+    </div>
+    <div class="grid-2" id="quota-grid"></div>
+  </section>
+
+  <!-- ═══ RÔLES ═══ -->
+  <section id="roles" class="section">
+    <div class="section-header"><div class="section-title">🎖️ Hiérarchie du MC<span>Rôles et responsabilités</span></div></div>
+    <div class="grid-2">
+      <div class="role-card" style="border-left:3px solid var(--skull-gold-light)"><div class="role-icon">👑</div><div class="role-card-name" style="color:var(--skull-gold-light)">Président</div><div class="role-card-desc">Dirige le MC avec autorité absolue. Prend les décisions stratégiques majeures, représente le club en public et dans les négociations avec les autres MCs. Il a le dernier mot sur toutes les affaires du club. Ses ordres ne se discutent pas — ils s'exécutent.</div></div>
+      <div class="role-card" style="border-left:3px solid var(--skull-gold)"><div class="role-icon">🥈</div><div class="role-card-name" style="color:var(--skull-gold)">Vice-Président</div><div class="role-card-desc">Bras droit du Président. Assure la direction en son absence et sert d'intermédiaire entre le leadership et les membres. Coordonne les opérations quotidiennes et veille à ce que la vision du Président soit respectée par tous. Candidat naturel à la succession.</div></div>
+      <div class="role-card" style="border-left:3px solid #a070e0"><div class="role-icon">📋</div><div class="role-card-name" style="color:#a070e0">Secrétaire</div><div class="role-card-desc">Cerveau organisationnel du club. Gère la documentation officielle, rédige les comptes-rendus de réunions (church), tient à jour le registre des membres. Il est la mémoire institutionnelle du MC et veille à la communication interne.</div></div>
+      <div class="role-card" style="border-left:3px solid var(--skull-gold)"><div class="role-icon">💰</div><div class="role-card-name" style="color:var(--skull-gold)">Trésorier</div><div class="role-card-desc">Gardien des finances du club. Gère les cotisations, les dépenses, les ressources communes et les fonds du MC. Présente un rapport financier à chaque church. Aucune dépense importante ne peut être engagée sans son accord.</div></div>
+      <div class="role-card" style="border-left:3px solid #d04040"><div class="role-icon">⚔️</div><div class="role-card-name" style="color:#d04040">Sergent d'Arme</div><div class="role-card-desc">Garant de la sécurité et de la discipline au sein du MC. Veille à la protection des membres lors des sorties. Gère les conflits internes, applique les sanctions décidées par le club et s'assure que le code d'honneur est respecté en toutes circonstances.</div></div>
+      <div class="role-card" style="border-left:3px solid #80b0ff"><div class="role-icon">🗺️</div><div class="role-card-name" style="color:#80b0ff">Capitaine de Route</div><div class="role-card-desc">Maître des road trips et des déplacements du club. Planifie les itinéraires, coordonne la formation en roulant et assure la sécurité du convoi. Connaît les routes comme sa poche. Responsable que chaque membre rentre sain et sauf.</div></div>
+      <div class="role-card" style="border-left:3px solid #6090d0"><div class="role-icon">🔱</div><div class="role-card-name" style="color:#6090d0">Membre</div><div class="role-card-desc">Frère à part entière du club. A prouvé sa loyauté, son engagement et son respect des valeurs du MC. Participe aux votes en church, porte les couleurs avec fierté. Le patch dans le dos n'est pas un titre — c'est un engagement de vie.</div></div>
+      <div class="role-card" style="border-left:3px solid var(--text-dim)"><div class="role-icon">🔰</div><div class="role-card-name" style="color:var(--text-dim)">Prospect</div><div class="role-card-desc">Candidat en période d'essai. N'a pas encore le droit de vote en church ni de porter les couleurs complètes. Doit faire ses preuves, accomplir les tâches demandées et démontrer qu'il est digne d'intégrer la fraternité.</div></div>
+    </div>
+  </section>
+
+  <!-- ═══ RÈGLEMENT ═══ -->
+  <section id="reglement" class="section">
+    <div class="section-header"><div class="section-title">⚖️ Règlement du Club<span>Code d'honneur — La Santa Muerte MC</span></div></div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="rule-item"><div class="rule-number">01</div><div><div class="rule-title">Respect de la Fraternité</div><div class="rule-text">Le MC passe avant tout. Chaque membre doit traiter ses frères avec respect, loyauté et honnêteté. Les conflits internes se règlent en church, jamais en public. La parole donnée est sacrée — un frère qui trahit sa parole trahit le club entier.</div></div></div>
+      <div class="rule-item"><div class="rule-number">02</div><div><div class="rule-title">Respect de la Hiérarchie</div><div class="rule-text">Les décisions de l'Officer Board sont définitives. Un membre peut exprimer son désaccord en church, mais une fois la décision prise, elle s'applique sans exception. Contester un ordre d'un supérieur en public est une faute grave.</div></div></div>
+      <div class="rule-item"><div class="rule-number">03</div><div><div class="rule-title">Présence et Engagement</div><div class="rule-text">Chaque membre est tenu de participer aux church meetings, aux événements du club et aux sorties organisées. Toute absence doit être justifiée à l'avance auprès du Secrétaire. Un membre régulièrement absent sans justification peut être rétrogradé ou exclu.</div></div></div>
+      <div class="rule-item"><div class="rule-number">04</div><div><div class="rule-title">Contribution aux Ressources</div><div class="rule-text">Chaque membre est tenu de remplir son quota de ressources défini par le Trésorier. Les ressources communes appartiennent au club et ne peuvent être utilisées à des fins personnelles sans accord. Le non-respect répété des quotas entraîne des sanctions.</div></div></div>
+      <div class="rule-item"><div class="rule-number">05</div><div><div class="rule-title">Couleurs et Représentation</div><div class="rule-text">Les couleurs du MC ne sont portées que par les membres à part entière. Elles ne sont jamais prêtées, vendues ou abandonnées. Un membre qui quitte le club ou est exclu doit restituer ses couleurs immédiatement.</div></div></div>
+      <div class="rule-item"><div class="rule-number">06</div><div><div class="rule-title">Confidentialité</div><div class="rule-text">Ce qui se passe en church reste en church. Les affaires internes du MC ne sont jamais divulguées à des personnes extérieures. La discrétion est une vertu fondamentale. Les fuites d'informations sont passibles de renvoi immédiat.</div></div></div>
+      <div class="rule-item"><div class="rule-number">07</div><div><div class="rule-title">Fraternité avant tout</div><div class="rule-text">Un frère en difficulté n'est jamais abandonné. Le MC est une famille — en cas de problème, chacun peut compter sur les autres. La solidarité entre membres est non-négociable. La Santa Muerte roule comme un seul homme.</div></div></div>
+      <div class="rule-item"><div class="rule-number">08</div><div><div class="rule-title">Sanctions et Exclusion</div><div class="rule-text">Tout manquement grave au règlement est jugé en church par vote. Les sanctions vont de l'avertissement à l'exclusion définitive. Trahison, vol au club, mensonge délibéré aux officers — exclusion immédiate et définitive sans appel.</div></div></div>
+    </div>
+  </section>
+</main>
+
+<!-- ══════════════════ MODALS ══════════════════ -->
+
+<!-- Ajouter ressource -->
+<div class="modal-overlay" id="modal-add-resource">
+  <div class="modal">
+    <div class="modal-title">📦 Nouvelle Ressource</div>
+    <div class="form-field"><label class="form-label">Nom de la ressource</label><input type="text" class="form-input" id="res-name" placeholder="Ex: Bois, Métal, Carburant..."></div>
+    <div class="form-field"><label class="form-label">Quantité initiale</label><input type="number" class="form-input" id="res-qty" placeholder="0" min="0"></div>
+    <div class="form-field"><label class="form-label">Emoji / Icône</label><input type="text" class="form-input" id="res-icon" placeholder="🪵 🪨 ⚙️ 💎 🔩" maxlength="2"></div>
+    <div class="form-field"><label class="form-label">URL Image (optionnel)</label><input type="url" class="form-input" id="res-img" placeholder="https://..."></div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="addResource()">✓ Créer</button>
+      <button class="modal-close" onclick="closeModal('modal-add-resource')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modifier ressource -->
+<div class="modal-overlay" id="modal-edit-resource">
+  <div class="modal">
+    <div class="modal-title">✏️ Modifier la Ressource</div>
+    <input type="hidden" id="edit-res-id">
+    <div class="form-field"><label class="form-label">Nom</label><input type="text" class="form-input" id="edit-res-name"></div>
+    <div class="form-field"><label class="form-label">Quantité</label><input type="number" class="form-input" id="edit-res-qty" min="0"></div>
+    <div class="form-field"><label class="form-label">Emoji / Icône</label><input type="text" class="form-input" id="edit-res-icon" maxlength="2"></div>
+    <div class="form-field"><label class="form-label">URL Image (optionnel)</label><input type="url" class="form-input" id="edit-res-img" placeholder="https://..."></div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveEditResource()">✓ Enregistrer</button>
+      <button class="modal-close" onclick="closeModal('modal-edit-resource')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ajouter membre -->
+<div class="modal-overlay" id="modal-add-member">
+  <div class="modal">
+    <div class="modal-title">👤 Nouveau Membre</div>
+    <div class="form-note">💡 Le membre pourra se connecter avec son pseudo GTA et le mot de passe défini ici pour gérer son statut et ses quotas.</div>
+    <div class="form-field"><label class="form-label">Prénom</label><input type="text" class="form-input" id="mem-firstname" placeholder="Prénom"></div>
+    <div class="form-field"><label class="form-label">Nom</label><input type="text" class="form-input" id="mem-lastname" placeholder="Nom de famille"></div>
+    <div class="form-field"><label class="form-label">Pseudo GTA (identifiant de connexion)</label><input type="text" class="form-input" id="mem-name" placeholder="Ex: El Diablo"></div>
+    <div class="form-field"><label class="form-label">Rôle</label>
+      <select class="form-select" id="mem-role">
+        <option value="prospect">Prospect</option><option value="membre">Membre</option>
+        <option value="capitaine">Capitaine de Route</option><option value="sergent">Sergent d'Arme</option>
+        <option value="tresorier">Trésorier</option><option value="secretaire">Secrétaire</option>
+        <option value="vice-president">Vice-Président</option><option value="president">Président</option>
+      </select>
+    </div>
+    <div class="form-field"><label class="form-label">Emoji Avatar</label><input type="text" class="form-input" id="mem-avatar" placeholder="💀 🐺 🔥 🦅" maxlength="2"></div>
+    <hr class="form-divider">
+    <div class="form-field"><label class="form-label">🔑 Mot de passe du membre</label><input type="password" class="form-input" id="mem-pass" placeholder="Choisir un mot de passe"></div>
+    <div class="form-field"><label class="form-label">🔑 Confirmer le mot de passe</label><input type="password" class="form-input" id="mem-pass2" placeholder="Confirmer le mot de passe"></div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="addMember()">✓ Créer le membre</button>
+      <button class="modal-close" onclick="closeModal('modal-add-member')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modifier membre -->
+<div class="modal-overlay" id="modal-edit-member">
+  <div class="modal">
+    <div class="modal-title">✏️ Modifier le Membre</div>
+    <input type="hidden" id="edit-mem-id">
+    <div class="form-field"><label class="form-label">Prénom</label><input type="text" class="form-input" id="edit-mem-firstname"></div>
+    <div class="form-field"><label class="form-label">Nom</label><input type="text" class="form-input" id="edit-mem-lastname"></div>
+    <div class="form-field"><label class="form-label">Pseudo GTA</label><input type="text" class="form-input" id="edit-mem-name"></div>
+    <div class="form-field"><label class="form-label">Rôle</label>
+      <select class="form-select" id="edit-mem-role">
+        <option value="prospect">Prospect</option><option value="membre">Membre</option>
+        <option value="capitaine">Capitaine de Route</option><option value="sergent">Sergent d'Arme</option>
+        <option value="tresorier">Trésorier</option><option value="secretaire">Secrétaire</option>
+        <option value="vice-president">Vice-Président</option><option value="president">Président</option>
+      </select>
+    </div>
+    <div class="form-field"><label class="form-label">Emoji Avatar</label><input type="text" class="form-input" id="edit-mem-avatar" maxlength="2"></div>
+    <hr class="form-divider">
+    <div class="form-field"><label class="form-label">🔑 Nouveau mot de passe (laisser vide = inchangé)</label><input type="password" class="form-input" id="edit-mem-pass" placeholder="Nouveau mot de passe"></div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveEditMember()">✓ Enregistrer</button>
+      <button class="modal-close" onclick="closeModal('modal-edit-member')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modifier objectifs quotas -->
+<div class="modal-overlay" id="modal-quota-target">
+  <div class="modal">
+    <div class="modal-title">⚙️ Objectifs de Quota</div>
+    <div id="quota-target-fields"></div>
+    <div class="modal-actions">
+      <button class="btn-primary" onclick="saveQuotaTargets()">✓ Enregistrer</button>
+      <button class="modal-close" onclick="closeModal('modal-quota-target')">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  SUPABASE CONFIG
+// ═══════════════════════════════════════════════
+const SUPABASE_URL = 'https://nrmmwvyylnzklchtrtzp.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ybW13dnl5bG56a2xjaHRydHpwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk5NTk5ODksImV4cCI6MjA5NTUzNTk4OX0.4DiBSB-fRUc-rR5aupyfRvBvq81sHD2I9Nz3y5_TYMo';
+
+async function sbGet(table) {
+  const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+  return r.json();
+}
+async function sbUpsert(table, data) {
+  await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates'
+    },
+    body: JSON.stringify(data)
+  });
+}
+async function sbDelete(table, id) {
+  await fetch(`${SUPABASE_URL}/rest/v1/${table}?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY }
+  });
+}
+async function saveState() {
+  await sbUpsert('sm_state', { id: 1, data: JSON.stringify(S) });
+}
+
+// ═══════════════════════════════════════════════
+//  CONSTANTS & STATE
+// ═══════════════════════════════════════════════
+const ADMIN_PASS = 'santamuerte2024';
+
+// Ressources fixes — seul l'admin peut modifier les quantités
+const FIXED_RESOURCES = [
+  {id:1, name:'Bois',      qty:1000, icon:'🪵', img:''},
+  {id:2, name:'Pierre',    qty:1000, icon:'🪨', img:''},
+  {id:3, name:'Ferraille', qty:1000, icon:'⚙️', img:''},
+];
+
+const roleLabels = {
+  prospect:'Prospect', membre:'Membre', capitaine:'Capitaine de Route',
+  sergent:"Sergent d'Arme", tresorier:'Trésorier', secretaire:'Secrétaire',
+  'vice-president':'Vice-Président', president:'Président'
+};
+
+let currentUser = null;
+
+let S = {
+  resources: [],
+  members: [],
+  quotas: {},
+  quotaTargets: {},
+  nextId: 20,
+};
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+async function init() {
+  showLoadingOverlay(true);
+  try {
+    const rows = await sbGet('sm_state');
+    if (rows && rows.length > 0 && rows[0].data) {
+      const saved = JSON.parse(rows[0].data);
+      S = saved;
+      // Toujours forcer les 3 ressources fixes, en préservant les quantités existantes
+      FIXED_RESOURCES.forEach(fr => {
+        const existing = S.resources.find(r => r.id === fr.id);
+        if (!existing) S.resources.push({...fr});
+      });
+      S.resources = S.resources.filter(r => FIXED_RESOURCES.find(fr => fr.id === r.id));
+      FIXED_RESOURCES.forEach(fr => { if (!S.quotaTargets[fr.id]) S.quotaTargets[fr.id] = 1000; });
+      S.members.forEach(m => {
+        if (!S.quotas[m.id]) S.quotas[m.id] = {};
+        FIXED_RESOURCES.forEach(r => { if (S.quotas[m.id][r.id] === undefined) S.quotas[m.id][r.id] = 0; });
+      });
+    } else {
+      // Données par défaut si première utilisation
+      S = {
+        resources: FIXED_RESOURCES.map(r => ({...r})),
+        members: [],
+        quotas: {},
+        quotaTargets: {1:1000, 2:1000, 3:1000},
+        nextId: 20,
+      };
+      await saveState();
+    }
+  } catch(e) {
+    console.error('Erreur chargement Supabase:', e);
+  }
+  showLoadingOverlay(false);
+  renderAll();
+  initParticles();
+}
+
+function showLoadingOverlay(show) {
+  let el = document.getElementById('loading-overlay');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'loading-overlay';
+    el.style.cssText = 'position:fixed;inset:0;background:rgba(2,11,24,.97);display:flex;align-items:center;justify-content:center;z-index:99999;flex-direction:column;gap:16px;';
+    el.innerHTML = '<div style="font-size:3rem">💀</div><div style="font-family:Rajdhani,sans-serif;letter-spacing:4px;color:#4090ff;text-transform:uppercase;font-size:.9rem">Chargement...</div>';
+    document.body.appendChild(el);
+  }
+  el.style.display = show ? 'flex' : 'none';
+}
+
+function renderAll() {
+  renderResources();
+  renderMembers();
+  renderQuotas();
+}
+
+// ═══════════════════════════════════════════════
+//  AUTH
+// ═══════════════════════════════════════════════
+function switchGateTab(tab) {
+  document.querySelectorAll('.gate-tab').forEach((t,i)=> t.classList.toggle('active', (i===0&&tab==='admin')||(i===1&&tab==='member')));
+  document.getElementById('gate-admin-panel').classList.toggle('active', tab==='admin');
+  document.getElementById('gate-member-panel').classList.toggle('active', tab==='member');
+}
+
+function tryAdmin() {
+  const pass = document.getElementById('gate-admin-pass').value;
+  if (pass === ADMIN_PASS) {
+    currentUser = {type:'admin'};
+    document.getElementById('login-gate').style.display = 'none';
+    document.getElementById('admin-badge').style.display = 'inline-block';
+    document.getElementById('visitor-badge').style.display = 'none';
+    document.getElementById('logout-btn').style.display = 'inline-block';
+    document.querySelectorAll('.admin-only').forEach(el => el.style.display='flex');
+    renderAll();
+    showToast('⚡ Bienvenue, Admin !');
+  } else {
+    showGateError('gate-admin-error');
+    document.getElementById('gate-admin-pass').value='';
+  }
+}
+
+function tryMember() {
+  const name = document.getElementById('gate-member-name').value.trim().toLowerCase();
+  const pass = document.getElementById('gate-member-pass').value;
+  const m = S.members.find(x => x.name.toLowerCase() === name && x.pass === pass);
+  if (m) {
+    currentUser = {type:'member', memberId: m.id};
+    document.getElementById('login-gate').style.display = 'none';
+    openMemberView(m.id);
+  } else {
+    showGateError('gate-member-error');
+    document.getElementById('gate-member-pass').value='';
+  }
+}
+
+function enterVisitor() {
+  currentUser = {type:'visitor'};
+  document.getElementById('login-gate').style.display = 'none';
+  document.getElementById('visitor-badge').style.display = 'inline-block';
+  document.getElementById('logout-btn').style.display = 'inline-block';
+  renderAll();
+  showToast('👁️ Mode visiteur — lecture seule');
+}
+
+function logout() {
+  currentUser = null;
+  // Reset UI
+  document.getElementById('admin-badge').style.display = 'none';
+  document.getElementById('visitor-badge').style.display = 'none';
+  document.getElementById('logout-btn').style.display = 'none';
+  document.querySelectorAll('.admin-only').forEach(el => el.style.display='none');
+  document.getElementById('member-view').classList.remove('open');
+  document.getElementById('gate-admin-pass').value='';
+  document.getElementById('gate-member-name').value='';
+  document.getElementById('gate-member-pass').value='';
+  document.getElementById('login-gate').style.display = 'flex';
+  switchGateTab('admin');
+}
+
+function showGateError(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'block';
+  setTimeout(()=>el.style.display='none', 3000);
+}
+
+document.getElementById('gate-admin-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') tryAdmin(); });
+document.getElementById('gate-member-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') tryMember(); });
+
+// ═══════════════════════════════════════════════
+//  MEMBER VIEW
+// ═══════════════════════════════════════════════
+function openMemberView(memberId) {
+  const m = S.members.find(x => x.id === memberId);
+  if (!m) return;
+  document.getElementById('mv-avatar').textContent = m.avatar || '💀';
+  document.getElementById('mv-name').textContent = m.name;
+  document.getElementById('mv-role-display').className = 'mv-member-role role-'+m.role;
+  document.getElementById('mv-role-display').textContent = roleLabels[m.role] || m.role;
+  updateMVStatus(m);
+  renderMVQuotas(m);
+  renderMVResources();
+  document.getElementById('member-view').classList.add('open');
+}
+
+function updateMVStatus(m) {
+  const icon = document.getElementById('mv-status-icon');
+  const text = document.getElementById('mv-status-text');
+  const btn  = document.getElementById('mv-toggle-btn');
+  if (m.online) {
+    icon.textContent = '🟢'; text.textContent = 'En ligne'; text.style.color = 'var(--online)';
+    btn.textContent = '🔴 Se mettre Absent'; btn.classList.add('going-offline');
+  } else {
+    icon.textContent = '🔴'; text.textContent = 'Absent'; text.style.color = 'var(--offline)';
+    btn.textContent = '🟢 Se mettre En Ligne'; btn.classList.remove('going-offline');
+  }
+}
+
+function memberToggleStatus() {
+  if (!currentUser || currentUser.type !== 'member') return;
+  const m = S.members.find(x => x.id === currentUser.memberId);
+  if (!m) return;
+  m.online = !m.online;
+  updateMVStatus(m);
+  renderMembers();
+  showToast(`${m.name} — ${m.online ? '🟢 En ligne' : '🔴 Absent'}`);
+  saveState();
+}
+
+function renderMVQuotas(m) {
+  const sec = document.getElementById('mv-quota-section');
+  const quotaData = S.quotas[m.id] || {};
+  sec.innerHTML = S.resources.map(r => {
+    const val = quotaData[r.id] || 0;
+    const target = S.quotaTargets[r.id] || 1000;
+    const pct = Math.min(100, Math.round((val/target)*100));
+    return `
+      <div class="mv-quota-item">
+        <div class="mv-quota-name">${r.icon||''} ${r.name}</div>
+        <div class="mv-quota-bar-wrap"><div class="mv-quota-bar ${val>=target?'full':''}" style="width:${pct}%"></div></div>
+        <div class="mv-quota-val">${val.toLocaleString()} / ${target.toLocaleString()}</div>
+      </div>
+      <div class="mv-quota-input-wrap" style="margin-bottom:12px;">
+        <input type="number" class="mv-quota-input" id="mvqi-${r.id}" value="${val}" min="0" placeholder="Ma contribution">
+        <button class="btn-success" onclick="saveMVQuota(${m.id},${r.id})">✓ Envoyer</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function saveMVQuota(memberId, resourceId) {
+  const input = document.getElementById(`mvqi-${resourceId}`);
+  const val = Math.max(0, parseInt(input.value)||0);
+  if (!S.quotas[memberId]) S.quotas[memberId]={};
+  S.quotas[memberId][resourceId] = val;
+  const m = S.members.find(x=>x.id===memberId);
+  if(m) renderMVQuotas(m);
+  renderQuotas();
+  showToast('✅ Contribution enregistrée !');
+  saveState();
+}
+
+function renderMVResources() {
+  const grid = document.getElementById('mv-resources-grid');
+  grid.innerHTML = S.resources.map(r => `
+    <div class="mv-res-card">
+      ${r.img ? `<img src="${r.img}" style="width:100%;height:70px;object-fit:cover;margin-bottom:8px;filter:saturate(.6)" onerror="this.style.display='none'">` : `<div class="mv-res-icon">${r.icon||'📦'}</div>`}
+      <div class="mv-res-name">${r.name}</div>
+      <div class="mv-res-qty">${r.qty.toLocaleString()}</div>
+    </div>
+  `).join('');
+}
+
+// ═══════════════════════════════════════════════
+//  NAV
+// ═══════════════════════════════════════════════
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════
+//  RESOURCES
+// ═══════════════════════════════════════════════
+function renderResources() {
+  const grid = document.getElementById('resources-grid');
+  const isAd = currentUser?.type === 'admin';
+  if (!S.resources.length) {
+    grid.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📦</div><div class="empty-state-text">Aucune ressource</div></div>';
+    updateResourceStats(); return;
+  }
+  grid.innerHTML = S.resources.map(r => `
+    <div class="resource-card">
+      ${r.img
+        ? `<img class="resource-img" src="${r.img}" alt="${r.name}" onerror="this.style.display='none'">`
+        : `<div class="resource-img-placeholder">${r.icon||'📦'}</div>`}
+      <div class="resource-name">${r.icon||''} ${r.name}</div>
+      <div class="resource-qty" id="rqty-${r.id}">${r.qty.toLocaleString()}</div>
+      <div class="resource-qty-label">Unités en stock</div>
+      ${isAd ? `
+      <div class="qty-controls">
+        <button class="qty-btn" onclick="adjQty(${r.id},-10)">−10</button>
+        <input type="number" class="qty-input-sm" id="rinput-${r.id}" value="100" min="1">
+        <button class="qty-btn" onclick="adjQtyCustom(${r.id})">±</button>
+        <button class="qty-btn" onclick="adjQty(${r.id},10)">+10</button>
+      </div>` : ''}
+    </div>
+  `).join('');
+  updateResourceStats();
+}
+
+function adjQty(id, delta) {
+  const r = S.resources.find(x=>x.id===id);
+  if (!r) return;
+  r.qty = Math.max(0, r.qty+delta);
+  document.getElementById(`rqty-${id}`).textContent = r.qty.toLocaleString();
+  updateResourceStats();
+  saveState();
+}
+function adjQtyCustom(id) {
+  const inp = document.getElementById(`rinput-${id}`);
+  adjQty(id, parseInt(inp.value)||0);
+}
+function deleteResource(id) {
+  if (!confirm('Supprimer cette ressource ?')) return;
+  S.resources = S.resources.filter(r=>r.id!==id);
+  renderAll(); showToast('🗑 Ressource supprimée'); saveState();
+}
+function addResource() {
+  const name = document.getElementById('res-name').value.trim();
+  const qty  = parseInt(document.getElementById('res-qty').value)||0;
+  const icon = document.getElementById('res-icon').value.trim();
+  const img  = document.getElementById('res-img').value.trim();
+  if (!name) { showToast('⚠️ Nom requis'); return; }
+  const nr = {id:S.nextId++, name, qty, icon, img};
+  S.resources.push(nr);
+  S.quotaTargets[nr.id] = 1000;
+  S.members.forEach(m=>{ if(!S.quotas[m.id]) S.quotas[m.id]={}; S.quotas[m.id][nr.id]=0; });
+  closeModal('modal-add-resource');
+  ['res-name','res-qty','res-icon','res-img'].forEach(id=>document.getElementById(id).value='');
+  renderAll(); showToast(`✅ Ressource "${name}" créée !`); saveState();
+}
+function openEditResource(id) {
+  const r = S.resources.find(x=>x.id===id);
+  if (!r) return;
+  document.getElementById('edit-res-id').value = id;
+  document.getElementById('edit-res-name').value = r.name;
+  document.getElementById('edit-res-qty').value  = r.qty;
+  document.getElementById('edit-res-icon').value = r.icon;
+  document.getElementById('edit-res-img').value  = r.img;
+  openModal('modal-edit-resource');
+}
+function saveEditResource() {
+  const id   = parseInt(document.getElementById('edit-res-id').value);
+  const r    = S.resources.find(x=>x.id===id);
+  if (!r) return;
+  const name = document.getElementById('edit-res-name').value.trim();
+  if (!name) { showToast('⚠️ Nom requis'); return; }
+  r.name = name;
+  r.qty  = Math.max(0, parseInt(document.getElementById('edit-res-qty').value)||0);
+  r.icon = document.getElementById('edit-res-icon').value.trim();
+  r.img  = document.getElementById('edit-res-img').value.trim();
+  closeModal('modal-edit-resource');
+  renderAll(); showToast(`✅ Ressource "${name}" modifiée !`); saveState();
+}
+function updateResourceStats() {
+  document.getElementById('stat-total').textContent = S.resources.length;
+  ['bois','pierre','ferraille'].forEach(kw => {
+    const r = S.resources.find(x=>x.name.toLowerCase().includes(kw));
+    const el = document.getElementById('stat-'+kw);
+    if (el) el.textContent = r ? r.qty.toLocaleString() : '—';
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  MEMBERS
+// ═══════════════════════════════════════════════
+function renderMembers() {
+  const grid = document.getElementById('members-grid');
+  const isAd = currentUser?.type === 'admin';
+  const total = S.members.length;
+  const online = S.members.filter(m=>m.online).length;
+  document.getElementById('stat-membres').textContent = total;
+  document.getElementById('stat-online').textContent  = online;
+  document.getElementById('stat-offline').textContent = total - online;
+  if (!total) {
+    grid.innerHTML='<div class="empty-state"><div class="empty-state-icon">👥</div><div class="empty-state-text">Aucun membre</div></div>'; return;
+  }
+  grid.innerHTML = S.members.map(m => `
+    <div class="member-card ${m.online?'online':'offline'}">
+      <div class="member-avatar">${m.avatar||'💀'}</div>
+      <div class="member-info">
+        <div class="member-name">${m.name}</div>
+        ${m.firstname||m.lastname ? `<div class="member-fullname">${[m.firstname,m.lastname].filter(Boolean).join(' ')}</div>` : ''}
+        <div class="member-role role-${m.role}">${roleLabels[m.role]||m.role}</div>
+        ${isAd ? `<div class="member-pass-tag">🔑 ${m.pass}</div>` : ''}
+      </div>
+      <div class="member-card-actions">
+        <button class="member-status-btn" onclick="toggleMemberStatus(${m.id})">${m.online?'🟢 En ligne':'🔴 Absent'}</button>
+        ${isAd ? `
+        <button class="btn-edit" onclick="openEditMember(${m.id})">✏️</button>
+        <button class="btn-danger" onclick="deleteMember(${m.id})">✕</button>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleMemberStatus(id) {
+  const m = S.members.find(x=>x.id===id);
+  if (!m) return;
+  // Only admin or the member themselves can toggle
+  if (currentUser?.type !== 'admin' && currentUser?.memberId !== id) {
+    showToast('⚠️ Action non autorisée'); return;
+  }
+  m.online = !m.online;
+  renderMembers();
+  if (currentUser?.type === 'member' && currentUser?.memberId === id) updateMVStatus(m);
+  showToast(`${m.name} — ${m.online?'🟢 En ligne':'🔴 Absent'}`);
+  saveState();
+}
+function deleteMember(id) {
+  if (!confirm('Retirer ce membre du roster ?')) return;
+  S.members = S.members.filter(m=>m.id!==id);
+  delete S.quotas[id];
+  renderAll(); showToast('🗑 Membre retiré'); saveState();
+}
+function addMember() {
+  const firstname = document.getElementById('mem-firstname').value.trim();
+  const lastname  = document.getElementById('mem-lastname').value.trim();
+  const name   = document.getElementById('mem-name').value.trim();
+  const role   = document.getElementById('mem-role').value;
+  const avatar = document.getElementById('mem-avatar').value.trim() || '💀';
+  const pass   = document.getElementById('mem-pass').value;
+  const pass2  = document.getElementById('mem-pass2').value;
+  if (!name)  { showToast('⚠️ Pseudo requis'); return; }
+  if (!pass)  { showToast('⚠️ Mot de passe requis'); return; }
+  if (pass !== pass2) { showToast('⚠️ Les mots de passe ne correspondent pas'); return; }
+  if (S.members.find(m=>m.name.toLowerCase()===name.toLowerCase())) { showToast('⚠️ Ce pseudo existe déjà'); return; }
+  const nm = {id:S.nextId++, firstname, lastname, name, role, avatar, online:false, pass};
+  S.members.push(nm);
+  S.quotas[nm.id]={};
+  S.resources.forEach(r=>{ S.quotas[nm.id][r.id]=0; });
+  closeModal('modal-add-member');
+  ['mem-firstname','mem-lastname','mem-name','mem-avatar','mem-pass','mem-pass2'].forEach(id=>document.getElementById(id).value='');
+  renderAll(); showToast(`✅ ${name} ajouté ! MDP: ${pass}`); saveState();
+}
+function openEditMember(id) {
+  const m = S.members.find(x=>x.id===id);
+  if (!m) return;
+  document.getElementById('edit-mem-id').value        = id;
+  document.getElementById('edit-mem-firstname').value = m.firstname||'';
+  document.getElementById('edit-mem-lastname').value  = m.lastname||'';
+  document.getElementById('edit-mem-name').value      = m.name;
+  document.getElementById('edit-mem-role').value      = m.role;
+  document.getElementById('edit-mem-avatar').value    = m.avatar||'';
+  document.getElementById('edit-mem-pass').value      = '';
+  openModal('modal-edit-member');
+}
+function saveEditMember() {
+  const id = parseInt(document.getElementById('edit-mem-id').value);
+  const m  = S.members.find(x=>x.id===id);
+  if (!m) return;
+  const name = document.getElementById('edit-mem-name').value.trim();
+  if (!name) { showToast('⚠️ Pseudo requis'); return; }
+  m.firstname = document.getElementById('edit-mem-firstname').value.trim();
+  m.lastname  = document.getElementById('edit-mem-lastname').value.trim();
+  m.name   = name;
+  m.role   = document.getElementById('edit-mem-role').value;
+  m.avatar = document.getElementById('edit-mem-avatar').value.trim() || m.avatar;
+  const newPass = document.getElementById('edit-mem-pass').value;
+  if (newPass) m.pass = newPass;
+  closeModal('modal-edit-member');
+  renderAll(); showToast(`✅ ${name} mis à jour !`); saveState();
+}
+
+// ═══════════════════════════════════════════════
+//  QUOTAS
+// ═══════════════════════════════════════════════
+function renderQuotas() {
+  const grid = document.getElementById('quota-grid');
+  const isAd = currentUser?.type === 'admin';
+  if (!S.members.length) {
+    grid.innerHTML='<div class="empty-state"><div class="empty-state-icon">📊</div><div class="empty-state-text">Aucun membre</div></div>'; return;
+  }
+  grid.innerHTML = S.members.map(m => {
+    const qd = S.quotas[m.id]||{};
+    const bars = S.resources.map(r => {
+      const val = qd[r.id]||0;
+      const target = S.quotaTargets[r.id]||1000;
+      const pct = Math.min(100, Math.round((val/target)*100));
+      return `<div class="quota-item">
+        <div class="quota-item-name">${r.icon||''} ${r.name}</div>
+        <div class="quota-bar-wrap"><div class="quota-bar ${val>=target?'full':''}" style="width:${pct}%"></div></div>
+        <div class="quota-val">${val.toLocaleString()} / ${(S.quotaTargets[r.id]||1000).toLocaleString()}</div>
+      </div>`;
+    }).join('');
+    const inputs = isAd ? S.resources.map(r => `
+      <div class="quota-row">
+        <div class="quota-row-label">${r.icon||''} ${r.name}</div>
+        <input type="number" class="quota-input" id="qi-${m.id}-${r.id}" value="${qd[r.id]||0}" min="0">
+        <button class="btn-success" onclick="saveQuota(${m.id},${r.id})">✓</button>
+      </div>
+    `).join('') : '';
+    return `
+      <div class="quota-card">
+        <div class="quota-member-name">${m.avatar||'💀'} ${m.name}</div>
+        <div class="quota-member-role role-${m.role}">${roleLabels[m.role]||m.role}</div>
+        ${bars}
+        ${isAd ? `<div class="quota-edit-section"><div class="quota-edit-label">⚙️ Modifier les contributions</div>${inputs}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function saveQuota(memberId, resourceId) {
+  const input = document.getElementById(`qi-${memberId}-${resourceId}`);
+  const val = Math.max(0, parseInt(input.value)||0);
+  if(!S.quotas[memberId]) S.quotas[memberId]={};
+  S.quotas[memberId][resourceId] = val;
+  renderQuotas(); showToast('✅ Contribution enregistrée !'); saveState();
+}
+function openQuotaTargetModal() {
+  const fields = document.getElementById('quota-target-fields');
+  fields.innerHTML = S.resources.map(r=>`
+    <div class="form-field">
+      <label class="form-label">${r.icon||''} ${r.name} — Objectif</label>
+      <input type="number" class="form-input" id="qt-${r.id}" value="${S.quotaTargets[r.id]||1000}" min="1">
+    </div>
+  `).join('');
+}
+function saveQuotaTargets() {
+  S.resources.forEach(r=>{
+    const inp=document.getElementById(`qt-${r.id}`);
+    if(inp) S.quotaTargets[r.id]=Math.max(1,parseInt(inp.value)||1000);
+  });
+  closeModal('modal-quota-target');
+  renderQuotas(); showToast('✅ Objectifs mis à jour !'); saveState();
+}
+
+// ═══════════════════════════════════════════════
+//  MODALS
+// ═══════════════════════════════════════════════
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if (id==='modal-quota-target') openQuotaTargetModal();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('open'); });
+});
+
+// ═══════════════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+// ═══════════════════════════════════════════════
+//  PARTICLES
+// ═══════════════════════════════════════════════
+function initParticles() {
+  const canvas=document.getElementById('particles');
+  const ctx=canvas.getContext('2d');
+  canvas.width=innerWidth; canvas.height=innerHeight;
+  window.addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;});
+  const pts=Array.from({length:55},()=>({
+    x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+    r:Math.random()*1.4+.3, vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3,
+    alpha:Math.random()*.5+.1, color:Math.random()>.7?'#c8960a':'#2060d0'
+  }));
+  (function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=canvas.width; if(p.x>canvas.width)p.x=0;
+      if(p.y<0)p.y=canvas.height; if(p.y>canvas.height)p.y=0;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill();
+    });
+    ctx.globalAlpha=1; requestAnimationFrame(draw);
+  })();
+}
+
+// ═══════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
