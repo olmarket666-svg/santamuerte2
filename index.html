@@ -357,7 +357,7 @@ main{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:40px;}
     <div class="section-header">
       <div class="section-title">📦 Inventaire Ressources<span>Gestion des stocks du MC</span></div>
       <div class="section-actions admin-only">
-        <button class="btn-primary admin-only" onclick="openModal('modal-add-resource')" style="display:none">+ Ajouter</button>
+        <button class="btn-primary" onclick="openModal('modal-add-resource')">+ Ajouter</button>
       </div>
     </div>
     <div class="stats-bar" id="resource-stats">
@@ -565,13 +565,6 @@ async function saveState() {
 // ═══════════════════════════════════════════════
 const ADMIN_PASS = 'santamuerte2024';
 
-// Ressources fixes — seul l'admin peut modifier les quantités
-const FIXED_RESOURCES = [
-  {id:1, name:'Bois',      qty:1000, icon:'🪵', img:''},
-  {id:2, name:'Pierre',    qty:1000, icon:'🪨', img:''},
-  {id:3, name:'Ferraille', qty:1000, icon:'⚙️', img:''},
-];
-
 const roleLabels = {
   prospect:'Prospect', membre:'Membre', capitaine:'Capitaine de Route',
   sergent:"Sergent d'Arme", tresorier:'Trésorier', secretaire:'Secrétaire',
@@ -598,26 +591,30 @@ async function init() {
     if (rows && rows.length > 0 && rows[0].data) {
       const saved = JSON.parse(rows[0].data);
       S = saved;
-      // Toujours forcer les 3 ressources fixes, en préservant les quantités existantes
-      FIXED_RESOURCES.forEach(fr => {
-        const existing = S.resources.find(r => r.id === fr.id);
-        if (!existing) S.resources.push({...fr});
-      });
-      S.resources = S.resources.filter(r => FIXED_RESOURCES.find(fr => fr.id === r.id));
-      FIXED_RESOURCES.forEach(fr => { if (!S.quotaTargets[fr.id]) S.quotaTargets[fr.id] = 1000; });
-      S.members.forEach(m => {
-        if (!S.quotas[m.id]) S.quotas[m.id] = {};
-        FIXED_RESOURCES.forEach(r => { if (S.quotas[m.id][r.id] === undefined) S.quotas[m.id][r.id] = 0; });
-      });
     } else {
       // Données par défaut si première utilisation
       S = {
-        resources: FIXED_RESOURCES.map(r => ({...r})),
-        members: [],
+        resources: [
+          {id:1, name:'Bois',      qty:1000, icon:'🪵', img:''},
+          {id:2, name:'Pierre',    qty:1000, icon:'🪨', img:''},
+          {id:3, name:'Ferraille', qty:1000, icon:'⚙️', img:''},
+        ],
+        members: [
+          {id:1, firstname:'Carlos',  lastname:'Reyes',   name:'El Presidente', role:'president',      avatar:'💀', online:false, pass:'pres2024'},
+          {id:2, firstname:'Marco',   lastname:'Diaz',    name:'Ghost Rider',   role:'vice-president', avatar:'🔥', online:false, pass:'ghost2024'},
+          {id:3, firstname:'Luis',    lastname:'Ortega',  name:'Iron Bull',     role:'sergent',        avatar:'🐂', online:false, pass:'bull2024'},
+          {id:4, firstname:'Ricardo', lastname:'Vega',    name:'Snake Eyes',    role:'tresorier',      avatar:'🐍', online:false, pass:'snake2024'},
+          {id:5, firstname:'Pablo',   lastname:'Torres',  name:'Rookie',        role:'prospect',       avatar:'🔰', online:false, pass:'rookie2024'},
+        ],
         quotas: {},
-        quotaTargets: {1:1000, 2:1000, 3:1000},
+        quotaTargets: {},
         nextId: 20,
       };
+      S.resources.forEach(r => { S.quotaTargets[r.id] = 1000; });
+      S.members.forEach(m => {
+        S.quotas[m.id] = {};
+        S.resources.forEach(r => { S.quotas[m.id][r.id] = 0; });
+      });
       await saveState();
     }
   } catch(e) {
@@ -837,6 +834,10 @@ function renderResources() {
         <input type="number" class="qty-input-sm" id="rinput-${r.id}" value="100" min="1">
         <button class="qty-btn" onclick="adjQtyCustom(${r.id})">±</button>
         <button class="qty-btn" onclick="adjQty(${r.id},10)">+10</button>
+      </div>
+      <div class="res-card-actions">
+        <button class="btn-edit" onclick="openEditResource(${r.id})" style="flex:1">✏️ Modifier</button>
+        <button class="btn-danger" onclick="deleteResource(${r.id})" style="flex:1">🗑 Suppr.</button>
       </div>` : ''}
     </div>
   `).join('');
